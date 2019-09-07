@@ -58,14 +58,42 @@ function calculate(){
     display.innerHTML+= " " +  "=";
     numbers.push(parseInt(currentNum));
 
-    sortBodmas(); // sort both arrays to execute in correct order
     console.log(operators);
     console.log(numbers);
     while(operators.length > 0){
-        var answer = operate(numbers[0],numbers[1],operators[0]);
-        popReverse(operators);
-        popReverse(numbers);
-        numbers[0] = answer;
+
+        // find index of next higher prio operator
+        if(operators.findIndex(isMultiply) != -1){
+            var operatorPointer = operators.findIndex(isMultiply);
+            // operate at this point
+            var answer = operate(numbers[operatorPointer],
+                numbers[operatorPointer+1],operators[operatorPointer]);
+            // now fix arrays 
+            // remove the operator at the operator pointer and correct array
+            operators = removeFromArray(operators,operatorPointer);
+            // remove the number at value operator pointer+1
+            numbers = removeFromArray(numbers,operatorPointer+1);
+            // set number value at operator pointer = answer
+            numbers[operatorPointer] = answer;
+        } else if(operators.findIndex(isDivide) != -1){
+            var operatorPointer = operators.findIndex(isDivide);
+            // operate at this point
+            var answer = operate(numbers[operatorPointer],
+                numbers[operatorPointer+1],operators[operatorPointer]);
+            // now fix arrays 
+            // remove the operator at the operator pointer and correct array
+            operators = removeFromArray(operators,operatorPointer);
+            // remove the number at value operator pointer+1
+            numbers = removeFromArray(numbers,operatorPointer+1);
+            // set number value at operator pointer = answer
+            numbers[operatorPointer] = answer;
+        } else{
+            // for adding or subtracting this is fine
+            var answer = operate(numbers[0],numbers[1],operators[0]);
+            popReverse(operators);
+            popReverse(numbers);
+            numbers[0] = answer;
+        }
     }
 
     var answer = numbers[0];
@@ -104,38 +132,22 @@ function popReverse(stack){
     stack.pop();
     stack.reverse();
 }
-/**
- * sorts the numbers and operators arrays
- * so that the order of exeuction will be correct for bodmas
- * aka * and / before + and -
- */
-function sortBodmas(){
-    var newOperators = operators.slice();
-    var newNumbers = numbers.slice();
-    var operatorPointer = 0;
-    var numberPointer = 0;
-    for (i=0;i<operators.length;i++){
-        if(operators[i]=='*' || operators[i]=='/'){
-            // swap operators
-            newOperators[operatorPointer] = operators[i];
-            newOperators[i] = operators[operatorPointer];
-            //swap numbers
-            newNumbers[numberPointer] = numbers[i];
-            newNumbers[i] = numbers[numberPointer];
-            console.log(newNumbers);
-            newNumbers[numberPointer+1] = numbers[i+1];
-            newNumbers[i+1] = numbers[numberPointer];
-            console.log(newNumbers);
-            //increment pointer
-            operatorPointer++;
-            numberPointer+=2;
-            numbers = newNumbers.slice();
-        }
-        
-    }   
-    operators = newOperators.slice();
-    numbers = newNumbers.slice();
+
+function removeFromArray(array,index){
+    var newArray = [];
+    for(i=0;i<array.length;i++){
+        if(i != index) newArray.push(array[i]);
+    }
+    return newArray;    
 }
+
+function isMultiply(text){
+    return text == '*';
+}
+function isDivide(text){
+    return text == '/';
+}
+
 var currentNum="";
 var numbers = [];
 var operators = [];
