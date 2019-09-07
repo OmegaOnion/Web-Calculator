@@ -34,6 +34,7 @@ function addButtonListeners(){
 }
 function numberClick(){
    var display = getDisplay();
+   if (resetNext) display.innerHTML = ""; resetNext = false;
    if (currentNum="") currentNum = String(this.value);
    else currentNum += String(this.value)
    display.innerHTML+= this.value;
@@ -41,9 +42,9 @@ function numberClick(){
 
 function operatorClick(){
     var display = getDisplay();
-    a = parseInt(currentNum);
+    numbers.push(parseInt(currentNum));
     currentNum="";
-    currentOperator = this.value;
+    operators.push(this.value);
     display.innerHTML+= " " + this.value + " ";
  }
 
@@ -55,10 +56,20 @@ function clear(){
 function calculate(){
     var display = getDisplay();
     display.innerHTML+= " " +  "=";
-    b = parseInt(currentNum);
-    var answer = operate(a,b,currentOperator);
+    numbers.push(parseInt(currentNum));
+
+    while(operators.length > 0){
+        var answer = operate(numbers[0],numbers[1],operators[0]);
+        popReverse(operators);
+        popReverse(numbers);
+        numbers[0] = answer;
+    }
+
+    var answer = numbers[0];
     outputValue(answer);
+    lastAnswer = answer;
     resetValues();
+    resetNext = true;
 }
 
 function outputValue(text){
@@ -72,17 +83,23 @@ function getOutput(){
     return document.getElementById("outputDisplay")
 }
 function resetValues(){
+    numbers=[];
+    operators =[];
     currentNum = "";
-    a = 0;
-    b = 0;
-    currentOperator = "";
 }
 
 function onLoad(){
     addButtonListeners();
 }
 
+function popReverse(stack){
+    stack.reverse();
+    stack.pop();
+    stack.reverse();
+}
+
 var currentNum="";
-var a;
-var b;
-var currentOperator;
+var numbers = [];
+var operators = [];
+var lastAnswer;
+var resetNext = false;
