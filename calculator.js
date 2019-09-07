@@ -58,6 +58,9 @@ function calculate(){
     display.innerHTML+= " " +  "=";
     numbers.push(parseInt(currentNum));
 
+    sortBodmas(); // sort both arrays to execute in correct order
+    console.log(operators);
+    console.log(numbers);
     while(operators.length > 0){
         var answer = operate(numbers[0],numbers[1],operators[0]);
         popReverse(operators);
@@ -92,12 +95,47 @@ function onLoad(){
     addButtonListeners();
 }
 
+/**
+ * its like pop but the opposite -  pops the bottom of the stack
+ * @param {*} stack 
+ */
 function popReverse(stack){
     stack.reverse();
     stack.pop();
     stack.reverse();
 }
-
+/**
+ * sorts the numbers and operators arrays
+ * so that the order of exeuction will be correct for bodmas
+ * aka * and / before + and -
+ */
+function sortBodmas(){
+    var newOperators = operators.slice();
+    var newNumbers = numbers.slice();
+    var operatorPointer = 0;
+    var numberPointer = 0;
+    for (i=0;i<operators.length;i++){
+        if(operators[i]=='*' || operators[i]=='/'){
+            // swap operators
+            newOperators[operatorPointer] = operators[i];
+            newOperators[i] = operators[operatorPointer];
+            //swap numbers
+            newNumbers[numberPointer] = numbers[i];
+            newNumbers[i] = numbers[numberPointer];
+            console.log(newNumbers);
+            newNumbers[numberPointer+1] = numbers[i+1];
+            newNumbers[i+1] = numbers[numberPointer];
+            console.log(newNumbers);
+            //increment pointer
+            operatorPointer++;
+            numberPointer+=2;
+            numbers = newNumbers.slice();
+        }
+        
+    }   
+    operators = newOperators.slice();
+    numbers = newNumbers.slice();
+}
 var currentNum="";
 var numbers = [];
 var operators = [];
