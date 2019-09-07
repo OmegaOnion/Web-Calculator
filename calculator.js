@@ -60,7 +60,8 @@ function calculate(){
 
     console.log(operators);
     console.log(numbers);
-    while(operators.length > 0){
+    // while there are still un calculated operators
+    while(operators.length > 0){ 
 
         // find index of next higher prio operator
         if(operators.findIndex(isMultiply) != -1){
@@ -97,6 +98,9 @@ function calculate(){
     }
 
     var answer = numbers[0];
+    if (answer == "Infinity"){
+        answer = "Don't divide by zero!" ;
+    }
     outputValue(answer);
     lastAnswer = answer;
     resetValues();
