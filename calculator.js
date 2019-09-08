@@ -22,10 +22,8 @@ function addButtonListeners(){
     for (var i = 0; i < classname.length; i++) {
         classname[i].addEventListener('click', numberClick);
     }
-    var classname = document.getElementsByClassName("number2");
-    for (var i = 0; i < classname.length; i++) {
-        classname[i].addEventListener('click', numberClick);
-    }
+    document.getElementById("dot").addEventListener('click', numberClick);// decimal point
+    document.getElementById("ans").addEventListener('click', ansClick);//answer button
     // operator buttons
     var classname = document.getElementsByClassName("operator");
     for (var i = 0; i < classname.length; i++) {
@@ -42,6 +40,9 @@ function numberClick(){
    if (currentNum=="") currentNum = String(this.value);
    else currentNum += String(this.value);
    display.innerHTML+= this.value;
+}
+function ansClick(){
+    
 }
 
 function operatorClick(){
