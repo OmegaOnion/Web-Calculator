@@ -40,29 +40,42 @@ function numberClick(){
    if (currentNum=="") currentNum = String(this.value);
    else currentNum += String(this.value);
    display.innerHTML+= this.value;
+   setFunctionButtonsDisabled(false);
+   setOperatorButtonsDisabled(false);
 }
 function ansClick(){
-    
+    var display = getDisplay();
+    if (resetNext) display.innerHTML = ""; resetNext = false;
+    if (currentNum=="") currentNum = "ans";
+    setNumberButtonsDisabled(true);
+    display.innerHTML+= this.value;
 }
 
 function operatorClick(){
     var display = getDisplay();
-    numbers.push(parseFloat(currentNum));
+    if (currentNum == "ans") numbers.push(lastAnswer);
+    else numbers.push(parseFloat(currentNum));
     currentNum="";
     operators.push(this.value);
+    setNumberButtonsDisabled(false);
     display.innerHTML+= " " + this.value + " ";
+    setFunctionButtonsDisabled(true);
+    setOperatorButtonsDisabled(true);
  }
 
 function clear(){
     getDisplay().innerHTML="";
     getOutput().innerHTML = "";
-    resetValues(); 
+    resetValues(true); 
+    setOperatorButtonsDisabled(true);
+    setFunctionButtonsDisabled(false);
 }
 function calculate(){
     var display = getDisplay();
     display.innerHTML+= " " +  "=";
-    numbers.push(parseFloat(currentNum));
-
+    if (currentNum=="ans") numbers.push(lastAnswer);
+    else numbers.push(parseFloat(currentNum));
+    setFunctionButtonsDisabled(true);
     console.log(operators);
     console.log(numbers);
     // while there are still un calculated operators
@@ -100,6 +113,8 @@ function calculate(){
             popReverse(numbers);
             numbers[0] = answer;
         }
+        setNumberButtonsDisabled(false);
+        setOperatorButtonsDisabled(true);
     }
 
     var answer = numbers[0];
@@ -110,7 +125,7 @@ function calculate(){
     }
     outputValue(answer);
     lastAnswer = answer;
-    resetValues();
+    resetValues(false);
     resetNext = true;
 }
 
@@ -124,14 +139,16 @@ function getDisplay(){
 function getOutput(){
     return document.getElementById("outputDisplay")
 }
-function resetValues(){
+function resetValues(resetLast){
     numbers=[];
     operators =[];
     currentNum = "";
+    if (resetLast) lastAnswer = 0;
 }
 
 function onLoad(){
     addButtonListeners();
+    setOperatorButtonsDisabled(true);
 }
 
 /**
@@ -159,8 +176,29 @@ function isDivide(text){
     return text == '/';
 }
 
+/**
+ * true for disabled false for enables
+ */
+function setNumberButtonsDisabled(boolean){
+    var classname = document.getElementsByClassName("number");
+    for (var i = 0; i < classname.length; i++) {
+        classname[i].disabled = boolean;
+    }
+}
+/**
+ * true for disabled false for enables
+ */
+function setFunctionButtonsDisabled(boolean){
+    document.getElementById("equals").disabled = boolean;
+}
+function setOperatorButtonsDisabled(boolean){
+    var classname = document.getElementsByClassName("operator");
+    for (var i = 0; i < classname.length; i++) {
+        classname[i].disabled = boolean;
+    }
+}
 var currentNum="";
 var numbers = [];
 var operators = [];
-var lastAnswer;
+var lastAnswer = 0;
 var resetNext = false;
