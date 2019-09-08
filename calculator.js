@@ -22,6 +22,10 @@ function addButtonListeners(){
     for (var i = 0; i < classname.length; i++) {
         classname[i].addEventListener('click', numberClick);
     }
+    var classname = document.getElementsByClassName("number2");
+    for (var i = 0; i < classname.length; i++) {
+        classname[i].addEventListener('click', numberClick);
+    }
     // operator buttons
     var classname = document.getElementsByClassName("operator");
     for (var i = 0; i < classname.length; i++) {
@@ -35,14 +39,14 @@ function addButtonListeners(){
 function numberClick(){
    var display = getDisplay();
    if (resetNext) display.innerHTML = ""; resetNext = false;
-   if (currentNum="") currentNum = String(this.value);
-   else currentNum += String(this.value)
+   if (currentNum=="") currentNum = String(this.value);
+   else currentNum += String(this.value);
    display.innerHTML+= this.value;
 }
 
 function operatorClick(){
     var display = getDisplay();
-    numbers.push(parseInt(currentNum));
+    numbers.push(parseFloat(currentNum));
     currentNum="";
     operators.push(this.value);
     display.innerHTML+= " " + this.value + " ";
@@ -56,7 +60,7 @@ function clear(){
 function calculate(){
     var display = getDisplay();
     display.innerHTML+= " " +  "=";
-    numbers.push(parseInt(currentNum));
+    numbers.push(parseFloat(currentNum));
 
     console.log(operators);
     console.log(numbers);
