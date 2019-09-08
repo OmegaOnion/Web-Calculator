@@ -68,3 +68,9 @@ button{
     width: 80px;
     float: left;
 }
+#equals{
+    background-image: linear-gradient( rgba(57, 228, 65, 0.938),
+    rgb(57, 228, 66));
+    position:absolute; 
+    bottom:4px;     
+}

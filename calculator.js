@@ -22,7 +22,7 @@ function addButtonListeners(){
     for (var i = 0; i < classname.length; i++) {
         classname[i].addEventListener('click', numberClick);
     }
-    document.getElementById("dot").addEventListener('click', numberClick);// decimal point
+    document.getElementById("dot").addEventListener('click', dotClick);// decimal point
     document.getElementById("ans").addEventListener('click', ansClick);//answer button
     // operator buttons
     var classname = document.getElementsByClassName("operator");
@@ -32,6 +32,7 @@ function addButtonListeners(){
     //function buttons
     document.getElementById("equals").addEventListener('click', calculate);//equals
     document.getElementById("clear").addEventListener('click', clear);//clear
+    document.getElementById("back").addEventListener('click', backspace);//backspace
 
 }
 function numberClick(){
@@ -42,13 +43,28 @@ function numberClick(){
    display.innerHTML+= this.value;
    setFunctionButtonsDisabled(false);
    setOperatorButtonsDisabled(false);
+   if (hasDot) setDotDisabled(true);
 }
+function dotClick(){
+    var display = getDisplay();
+    if (resetNext) display.innerHTML = ""; resetNext = false;
+    if (currentNum=="") currentNum = String(this.value);
+    else currentNum += String(this.value);
+    display.innerHTML+= this.value;
+    setFunctionButtonsDisabled(true);
+    setOperatorButtonsDisabled(true);
+    hasDot = true;
+ }
+
 function ansClick(){
     var display = getDisplay();
     if (resetNext) display.innerHTML = ""; resetNext = false;
     if (currentNum=="") currentNum = "ans";
     setNumberButtonsDisabled(true);
     display.innerHTML+= this.value;
+    setFunctionButtonsDisabled(false);
+    setOperatorButtonsDisabled(false);
+    setDotDisabled(true);
 }
 
 function operatorClick(){
@@ -61,6 +77,9 @@ function operatorClick(){
     display.innerHTML+= " " + this.value + " ";
     setFunctionButtonsDisabled(true);
     setOperatorButtonsDisabled(true);
+    if (hasDot) hadDot = true;
+    else hadDot = false;
+    hasDot = false;
  }
 
 function clear(){
@@ -69,6 +88,7 @@ function clear(){
     resetValues(true); 
     setOperatorButtonsDisabled(true);
     setFunctionButtonsDisabled(false);
+    setNumberButtonsDisabled(false);
 }
 function calculate(){
     var display = getDisplay();
@@ -143,6 +163,8 @@ function resetValues(resetLast){
     numbers=[];
     operators =[];
     currentNum = "";
+    hasDot = false;
+    hadDot = false;
     if (resetLast) lastAnswer = 0;
 }
 
@@ -176,6 +198,50 @@ function isDivide(text){
     return text == '/';
 }
 
+function isOperator(c){
+    return isDivide(c) || isMultiply(c) || c == '+' || c == '-';
+}
+
+function backspace(){
+    var display = getDisplay();
+    var currentText = display.innerHTML;
+    if (currentText == "") return // if nothing
+    if (currentText.charAt(currentText.length-1) == " "){
+        currentText = currentText.slice(0,currentText.length-1);
+    }
+    if (isOperator(currentText.charAt(currentText.length-1))){
+        // remove operator
+        operators.pop();
+        // remove space
+        currentText = currentText.slice(0,currentText.length-2); //removes operator and space
+        // remove last number added
+        // set currentNum
+        currentNum = String(numbers.pop());
+        // disable buttons
+        setOperatorButtonsDisabled(false);
+        setFunctionButtonsDisabled(false);
+        setNumberButtonsDisabled(false);
+        if (hadDot) setDotDisabled(true);
+    } else if (isNumeric(currentText.charAt(currentText.length-1))){
+        console.log("hi");
+        // remove character of number from display
+        if (currentText.length == 1) currentText = "";
+        else currentText = currentText.slice(0,currentText.length-1);
+        // remove character from currentNum
+        if (currentNum.length == 1) currentNum = ""
+        else currentNum = currentNum.slice(0,currentNum.length-1);     
+    } else if (currentText.charAt(currentText.length-1) == '.'){
+        // remove decimal point from dispaly
+        currentText = currentText.slice(0,currentText.length-1);
+        // remove decimal point from currentNum
+        currentNum = currentNum.slice(0,currentNum.length-1);
+        hasDot = false;
+        setOperatorButtonsDisabled(false);
+    }
+
+    display.innerHTML = currentText;
+}
+
 /**
  * true for disabled false for enables
  */
@@ -196,9 +262,18 @@ function setOperatorButtonsDisabled(boolean){
     for (var i = 0; i < classname.length; i++) {
         classname[i].disabled = boolean;
     }
+    setDotDisabled(boolean);
+}
+function setDotDisabled(boolean){
+    document.getElementById("dot").disabled = boolean;
+}
+function isNumeric(c){
+    return /\d/.test(c);
 }
 var currentNum="";
 var numbers = [];
 var operators = [];
 var lastAnswer = 0;
 var resetNext = false;
+var hasDot = false;
+var hadDot = false;
