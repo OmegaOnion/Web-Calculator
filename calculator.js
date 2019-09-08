@@ -102,6 +102,8 @@ function calculate(){
     }
 
     var answer = numbers[0];
+    var NUMBER_OF_DECIMAL_PLACES = 4;
+    answer = Math.round(answer * 10 ** NUMBER_OF_DECIMAL_PLACES) / 10 ** NUMBER_OF_DECIMAL_PLACES;
     if (answer == "Infinity"){
         answer = "Don't divide by zero!" ;
     }
