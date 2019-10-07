@@ -43,6 +43,7 @@ function numberClick(){
    display.innerHTML+= this.value;
    setFunctionButtonsDisabled(false);
    setOperatorButtonsDisabled(false);
+   setAnsButtonDisabled(true);
    if (hasDot) setDotDisabled(true);
 }
 function dotClick(){
@@ -53,6 +54,7 @@ function dotClick(){
     display.innerHTML+= this.value;
     setFunctionButtonsDisabled(true);
     setOperatorButtonsDisabled(true);
+    setAnsButtonDisabled(false);
     hasDot = true;
  }
 
@@ -65,6 +67,7 @@ function ansClick(){
     setFunctionButtonsDisabled(false);
     setOperatorButtonsDisabled(false);
     setDotDisabled(true);
+    setAnsButtonDisabled(true);
 }
 
 function operatorClick(){
@@ -77,6 +80,7 @@ function operatorClick(){
     display.innerHTML+= " " + this.value + " ";
     setFunctionButtonsDisabled(true);
     setOperatorButtonsDisabled(true);
+    setAnsButtonDisabled(false);
     if (hasDot) hadDot = true;
     else hadDot = false;
     hasDot = false;
@@ -89,6 +93,7 @@ function clear(){
     setOperatorButtonsDisabled(true);
     setFunctionButtonsDisabled(false);
     setNumberButtonsDisabled(false);
+    setAnsButtonDisabled(false);
 }
 function calculate(){
     var display = getDisplay();
@@ -133,9 +138,12 @@ function calculate(){
             popReverse(numbers);
             numbers[0] = answer;
         }
-        setNumberButtonsDisabled(false);
-        setOperatorButtonsDisabled(true);
+
     }
+
+    setNumberButtonsDisabled(false);
+    setOperatorButtonsDisabled(true);
+    setAnsButtonDisabled(false);
 
     var answer = numbers[0];
     var NUMBER_OF_DECIMAL_PLACES = 4;
@@ -267,6 +275,10 @@ function setOperatorButtonsDisabled(boolean){
 function setDotDisabled(boolean){
     document.getElementById("dot").disabled = boolean;
 }
+function setAnsButtonDisabled(boolean){
+    document.getElementById("ans").disabled = boolean;
+}
+
 function isNumeric(c){
     return /\d/.test(c);
 }
